@@ -11,9 +11,9 @@ MNS::Response::Response(const MNS::SocketData *socketData) {
 	this->statusCode = 200;
 
 	this->bufferLen = 0;
-	this->buffer = (char *)malloc(1024);
-	this->responseBuffer = (char *)malloc(1024);
-	this->bufferSize = 1024;
+	this->buffer = (char *)malloc(4096);
+	this->responseBuffer = (char *)malloc(4096);
+	this->bufferSize = 4096;
 	//this->response.reserve(1024);
 }
 
@@ -22,10 +22,10 @@ int MNS::Response::clear() {
 	//this->response.clear();
 
 	this->bufferLen = 0;
-	if(this->bufferSize != 1024) {
-		this->buffer = (char *)realloc(this->buffer, 1024);
-		this->responseBuffer = (char *)realloc(this->responseBuffer, 1024);
-		this->bufferSize = 1024;
+	if(this->bufferSize != 4096) {
+		this->buffer = (char *)realloc(this->buffer, 4096);
+		this->responseBuffer = (char *)realloc(this->responseBuffer, 4096);
+		this->bufferSize = 4096;
 	}
 
 	return 0;
@@ -63,8 +63,10 @@ int MNS::Response::addTrailers(void *headers) {return 0;}
 int MNS::Response::write(const char *data, unsigned int dataLen) {
 	if(data) {
 		//unsigned int dataLen = strlen(data);
-		if(bufferSize - bufferLen < dataLen) {
-			this->buffer = (char *) realloc(this->buffer, (dataLen > 1024) ? bufferSize + dataLen : bufferSize + 1024);
+		if(this->bufferSize < dataLen + 512) {
+			int ns = std::max(dataLen + 512, (unsigned int)4096);
+			this->bufferSize = this->bufferSize + ns;
+			this->buffer = (char *)realloc(this->buffer, this->bufferSize);
 		}
 
 		memcpy(this->buffer + this->bufferLen, data, dataLen);
@@ -84,6 +86,12 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 //
 //	uv_poll_start(this->socketData->poll_h, UV_WRITABLE, MNS::Server::onWriteData);
 //	return 0;
+
+	if(this->bufferSize < dataLen + 512) {
+		int ns = std::max(dataLen + 512, (unsigned int)4096);
+		this->bufferSize = this->bufferSize + ns;
+		this->responseBuffer = (char *)realloc(this->responseBuffer, this->bufferSize);
+	}
 
 	int offset = 0;
 	this->setHeader(std::string("Content-Length", 14), std::to_string(dataLen));
