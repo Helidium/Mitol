@@ -87,6 +87,7 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 
 	int offset = 0;
 	this->setHeader(std::string("Content-Length", 14), std::to_string(dataLen));
+	this->setHeader(std::string("Date", 4), MNS::Server::currTime);
 
 	MNS::Request *request = this->socketData->request;
 	char *rb = this->responseBuffer + this->bufferLen;
