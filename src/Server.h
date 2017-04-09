@@ -50,6 +50,12 @@ namespace MNS {
 	    static void onClose(uv_handle_t *handle);
 
 	    /**
+	     * Close timer callback
+	     * @param handle - Poll handle
+	     */
+	    static void onCloseTimer(uv_handle_t *handle);
+
+	    /**
 	     * Data available callback
 	     * @param handle - Poll handle
 	     * @param status - Status of the call, 0 OK
@@ -57,6 +63,13 @@ namespace MNS {
 	     */
 	    static void onReadData(uv_poll_t *handle, int status, int events);
 
+	    /**
+	     * Pipeline data callback
+	     * @param handle - Poll handle
+	     * @param status - Status of the call, 0 OK
+	     * @param events - Poll events
+	     */
+	    static void onReadDataPipelined(uv_poll_t *handle, int status, int events);
 	    /**
 	     * Callback for writing data on the socket
 	     * @param handle - Poll handle
@@ -110,6 +123,8 @@ namespace MNS {
 	    /// Fd of the listening socket
         int listeningSocket=0;
 
+	    /// Handle for second timer
+	    uv_timer_t *timer_h;
     protected:
     };
 }

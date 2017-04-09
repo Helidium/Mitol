@@ -86,10 +86,10 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 //	return 0;
 
 	int offset = 0;
-	this->setHeader(std::string("Content-Length", 14), std::to_string(this->bufferLen + dataLen));
+	this->setHeader(std::string("Content-Length", 14), std::to_string(dataLen));
 
 	MNS::Request *request = this->socketData->request;
-	char *rb = this->responseBuffer;
+	char *rb = this->responseBuffer + this->bufferLen;
 	// First print the status code
 	rb = (char *)mempcpy(rb, (request->httpVersion==HTTP_VERSION::HTTP_1_1)?"HTTP/1.1 ":"HTTP/1.0 ", 9);
 	// Copy the response MSG
@@ -228,5 +228,10 @@ MNS::Response::~Response() {
 
 	free(this->buffer);
 	this->buffer = NULL;
+
+	free(this->responseBuffer);
+	this->responseBuffer = NULL;
+
 	this->bufferLen = 0;
+	this->bufferSize = 0;
 }

@@ -1,6 +1,8 @@
 #include "Http.h"
 
-MNS::Http::Http() {}
+MNS::Http::Http() {
+	this->server = NULL;
+}
 
 MNS::Server *MNS::Http::createServer() {
 	if(this->server) return this->server;

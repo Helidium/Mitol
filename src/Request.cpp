@@ -17,8 +17,14 @@ enum PARSER_STATE {
 MNS::Request::Request(const MNS::SocketData *socketData) {
 	this->socketData = socketData;
 
-	this->buffer = (char *) malloc(1024);
+	this->finished = false;
+	this->lastParsePos = 0;
+	this->buffer = (char *) malloc(4096);
 	this->state = REQUEST_STATE::CONNECTING;
+}
+
+bool MNS::Request::isFinished() {
+	return this->finished;
 }
 
 char *MNS::Request::getBuffer() {
@@ -30,15 +36,18 @@ ssize_t MNS::Request::getBufferLen() {
 }
 
 int MNS::Request::Parse(ssize_t requestLen) {
-	//char buff[1024]; memcpy(buff, this->buffer, requestLen);
-	
-	this->bufferLen = requestLen;
+	if(requestLen >= 0) {
+		this->finished = false;
+		this->lastParsePos = 0;
+		this->bufferLen = requestLen;
+	}
+
 	this->state = REQUEST_STATE::PARSING_HEADERS;
 	
 	PARSER_STATE parserState = PARSER_STATE::METHOD;
 
-	for (int i = 0; i < requestLen; i++) {
-		char c = buffer[i];//this->buffer[i];
+	for (int i = this->lastParsePos; i < this->bufferLen; i++) {
+		char c = this->buffer[i];
 
 		switch (parserState) {
 			case PARSER_STATE::METHOD:
@@ -49,7 +58,7 @@ int MNS::Request::Parse(ssize_t requestLen) {
 					this->method = HTTP_METHOD::OPTIONS;
 					i += 7;
 				} else if (c == 'P' || c == 'p') {
-					char c1 = buffer[i + 1];
+					char c1 = this->buffer[i + 1];
 					if (c1 == 'O' || c1 == 'o') {
 						this->method = HTTP_METHOD::POST;
 						i += 4;
@@ -77,8 +86,8 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				parserState = PARSER_STATE::URL;
 				break;
 			case PARSER_STATE::URL:
-				this->url = buffer + i;
-				i = (int)((char*)memchr(this->url, ' ', requestLen) - buffer);
+				this->url = this->buffer + i;
+				i = (int)((char*)memchr(this->url, ' ', requestLen) - this->buffer);
 				buffer[i] = '\0';
 
 				i += 7;
@@ -108,7 +117,34 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				//this->headers[std::string(name, nameLen)] = std::string(value, valueLen);
 				this->headers[name] = value;
 
-				if (buffer[i + 1] == '\r') parserState = PARSER_STATE::BODY;
+				// Finished parsing headers
+				if (buffer[i + 1] == '\r') {
+					// Possibility of pipelining
+					if(this->method == HTTP_METHOD::GET || this->method == HTTP_METHOD::HEAD) {
+						// More pipelined requests
+						if(i + 3 < this->bufferLen) {
+							this->lastParsePos = i+3;
+
+							// Return back to handler
+							return 0;
+						} else {
+							parserState = PARSER_STATE::FINISHED;
+							this->finished = true;
+
+							return 0;
+						}
+					} else {
+						// Is request not drained
+						if(i + 3 < this->bufferLen) {
+							parserState = PARSER_STATE::BODY;
+						} else {
+							parserState = PARSER_STATE::FINISHED;
+							this->finished = true;
+
+							return 0;
+						}
+					}
+				}
 
 				break;
 			}
@@ -117,6 +153,7 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				break;
 			default:
 				i = requestLen;
+				this->finished = true;
 				break;
 		}
 	}

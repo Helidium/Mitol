@@ -11,7 +11,6 @@ std::string MNS::Server::currTime = "";
 std::map<int, std::string> MNS::Server::response_msgs;
 
 void MNS::Server::onConnect(uv_poll_t *handle, int status, int events) {
-	//printf("Acception socket"); fflush(stdout);
 	MNS::SocketData *data = static_cast<MNS::SocketData *>(handle->data);
 	if (data) {
 		const MNS::Server *server = data->server;
@@ -20,7 +19,7 @@ void MNS::Server::onConnect(uv_poll_t *handle, int status, int events) {
 		int csock = accept4(data->fd, (sockaddr *) &sadr, &addr_size, SOCK_NONBLOCK);
 
 		int y_int = 1;
-		//setsockopt(csock, SOL_SOCKET, SO_KEEPALIVE, &y_int, sizeof(int));
+		setsockopt(csock, SOL_SOCKET, SO_KEEPALIVE, &y_int, sizeof(int));
 		setsockopt(csock, IPPROTO_TCP, TCP_NODELAY, &y_int, sizeof(int));
 		//setsockopt(csock, IPPROTO_TCP, TCP_QUICKACK, &y_int, sizeof(int));
 
@@ -47,7 +46,40 @@ void MNS::Server::onClose(uv_handle_t *handle) {
 	free(handle);
 }
 
+void MNS::Server::onCloseTimer(uv_handle_t *handle) {
+	uv_timer_stop((uv_timer_t *) handle);
+	delete (handle);
+}
+
+void MNS::Server::onReadDataPipelined(uv_poll_t *handle, int status, int events) {
+	MNS::SocketData *data = static_cast<MNS::SocketData *>(handle->data);
+	MNS::Server *server = data->server;
+
+	if (!data->request->Parse(-1)) {
+		data->response->startResponse();
+
+		if (server->onHttpRequestHandler) {
+			server->onHttpRequestHandler(data);
+		} else {
+			uv_poll_stop(handle);
+			uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+		}
+	} else {
+		printf("Parse ERROR! Closing socket!\n");
+
+		uv_poll_stop(handle);
+		uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+	}
+}
+
 void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
+	if (status < 0 && errno != EAGAIN) {
+		uv_poll_stop(handle);
+		uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+
+		return;
+	}
+
 	ssize_t requestLen = 0;
 	ssize_t bytesRead = 0;
 	MNS::SocketData *data = static_cast<MNS::SocketData *>(handle->data);
@@ -55,8 +87,7 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 
 	// Todo: Offset and grow buffer in case of larger requests
 	// Todo: Mark request state as reading socket
-	while ((bytesRead = recv(data->fd, data->request->getBuffer(), 1024, 0)) >
-	       0) { // WHILE DATA READ:: POTENTIAL ERROR SIZE OF READ DATA
+	while ((bytesRead = recv(data->fd, data->request->getBuffer(), 4096, 0)) > 0) { // WHILE DATA READ:: POTENTIAL ERROR SIZE OF READ DATA
 		requestLen += bytesRead;
 	}
 
@@ -65,6 +96,8 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 		} else {
 			uv_poll_stop(handle);
 			uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+
+			return;
 		}
 	} else {
 		if (!data->request->Parse(requestLen)) {
@@ -79,7 +112,10 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 				uv_close((uv_handle_t *) handle, MNS::Server::onClose);
 			}
 		} else {
-			printf("Parse ERROR! Closing socket!\n");
+			//printf("Parse ERROR! Closing socket!\n");
+
+			uv_poll_stop(handle);
+			uv_close((uv_handle_t *) handle, MNS::Server::onClose);
 		}
 	}
 }
@@ -87,14 +123,37 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 void MNS::Server::onWriteData(uv_poll_t *handle, int status, int events) {
 	MNS::SocketData *data = static_cast<MNS::SocketData *>(handle->data);
 
+	if (status < 0) {
+		if (errno != EAGAIN) {
+			uv_poll_stop(handle);
+			uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+			return;
+		}
+	}
+
 	if (data) {
 		MNS::Response *response = data->response;
 
 		ssize_t numSent = send(data->fd, response->getBuffer(), response->getBufferLen(), 0);
 		if (numSent == (int) response->getBufferLen()) {
 			response->clear();
-			uv_poll_start(handle, UV_READABLE, onReadData);
+
+			if (data->request->isFinished()) {
+				uv_poll_start(handle, UV_READABLE, onReadData);
+			} else {
+				// Request not finished, pipelining, continue serving data
+				onReadDataPipelined(handle, 0, 0);
+			}
+		} else if (numSent < 0) {
+			int err = errno;
+
+			if (err != EAGAIN) {
+				uv_poll_stop(handle);
+				uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+				return;
+			}
 		}
+
 	}
 }
 
@@ -112,12 +171,12 @@ void MNS::Server::listen(int port) {
 
 	if (listeningSocket != -1) {
 		// Start the timer
-		uv_timer_t *timer_h = new uv_timer_t;
+		this->timer_h = new uv_timer_t;//(uv_timer_t *)malloc(sizeof(uv_timer_t));
 		uv_timer_init(loop, timer_h);
 		uv_timer_start(timer_h, MNS::Server::onSecondTimer, 0, 1000);
 
 		// Register the listening socket
-		uv_poll_t *listening_poll_h = new uv_poll_t;
+		uv_poll_t *listening_poll_h = (uv_poll_t *) malloc(sizeof(uv_poll_t));
 		listening_poll_h->data = new SocketData(listening_poll_h, listeningSocket, SOCKET_TYPE::LISTENING, this);
 
 		uv_poll_init(loop, listening_poll_h, listeningSocket);
@@ -129,17 +188,16 @@ void MNS::Server::listen(int port) {
 
 void MNS::Server::run() {
 	uv_run(loop, UV_RUN_DEFAULT);
+
+	uv_loop_close(loop);
 }
 
 void MNS::Server::stop() {
-	for (auto it = polls.begin(); it != polls.end(); it++) {
-		MNS::SocketData *data = (MNS::SocketData *) it->second->data;
-		it->second->data = NULL;
+	uv_close((uv_handle_t *) this->timer_h, MNS::Server::onCloseTimer);
 
+	for (auto it = polls.begin(); it != polls.end(); ++it) {
 		uv_poll_stop(it->second);
-		free(it->second);
-		close(it->first);
-		delete (data);
+		uv_close((uv_handle_t *) it->second, MNS::Server::onClose);
 	}
 
 	polls.clear();

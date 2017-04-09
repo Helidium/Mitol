@@ -48,6 +48,11 @@ namespace MNS {
         ~Request();
 
 	    /**
+	     * Returns the finish state of the request
+	     * @return true if request finished; false otherwise
+	     */
+	    bool isFinished();
+	    /**
 	     * Returns the request buffer
 	     * @return Buffer containing the request data
 	     */
@@ -102,6 +107,10 @@ namespace MNS {
 	    /// Internal buffer
         char* buffer;
 
+	    /// Mark the finish of the request processing
+	    bool finished;
+
+	    ssize_t lastParsePos;
 	    /// Internal buffer length
 	    ssize_t bufferLen;
 

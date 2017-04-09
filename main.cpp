@@ -13,7 +13,6 @@ void onSignalReceived(int signum) {
 int main() {
 	signal(SIGTERM, onSignalReceived);
 	signal(SIGINT, onSignalReceived);
-	signal(SIGKILL, onSignalReceived);
 	signal(SIGALRM, onSignalReceived);
 
 	MNS::Http *http = new MNS::Http();
