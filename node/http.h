@@ -37,53 +37,60 @@ struct HttpRequest {
 
 	static void GetUrl(Local<String> property, const PropertyCallbackInfo<Value> &args) {
 		MNS::SocketData *data = static_cast<MNS::SocketData *>(args.Holder()->GetAlignedPointerFromInternalField(0));
-		args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) data->request->url));
+
+		if(data) {
+			args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) data->request->url));
+		}
 	}
 
 	static void GetMethod(Local<String> property, const PropertyCallbackInfo<Value> &args) {
 		MNS::SocketData *data = static_cast<MNS::SocketData *>(args.Holder()->GetAlignedPointerFromInternalField(0));
 
-		switch (data->request->method) {
-			case MNS::HTTP_METHOD::GET:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "GET", String::kNormalString, 3));
-				break;
-			case MNS::HTTP_METHOD::POST:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "POST", String::kNormalString, 4));
-				break;
-			case MNS::HTTP_METHOD::HEAD:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "HEAD", String::kNormalString, 4));
-				break;
-			case MNS::HTTP_METHOD::OPTIONS:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "OPTIONS", String::kNormalString, 7));
-				break;
-			case MNS::HTTP_METHOD::CONNECT:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "CONNECT", String::kNormalString, 7));
-				break;
-			case MNS::HTTP_METHOD::DELETE:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "DELETE", String::kNormalString, 6));
-				break;
-			case MNS::HTTP_METHOD::PATCH:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PATCH", String::kNormalString, 5));
-				break;
-			case MNS::HTTP_METHOD::PUT:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PUT", String::kNormalString, 3));
-				break;
-			case MNS::HTTP_METHOD::TRACE:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "TRACE", String::kNormalString, 5));
-				break;
+		if(data) {
+			switch (data->request->method) {
+				case MNS::HTTP_METHOD::GET:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "GET", String::kNormalString, 3));
+					break;
+				case MNS::HTTP_METHOD::POST:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "POST", String::kNormalString, 4));
+					break;
+				case MNS::HTTP_METHOD::HEAD:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "HEAD", String::kNormalString, 4));
+					break;
+				case MNS::HTTP_METHOD::OPTIONS:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "OPTIONS", String::kNormalString, 7));
+					break;
+				case MNS::HTTP_METHOD::CONNECT:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "CONNECT", String::kNormalString, 7));
+					break;
+				case MNS::HTTP_METHOD::DELETE:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "DELETE", String::kNormalString, 6));
+					break;
+				case MNS::HTTP_METHOD::PATCH:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PATCH", String::kNormalString, 5));
+					break;
+				case MNS::HTTP_METHOD::PUT:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "PUT", String::kNormalString, 3));
+					break;
+				case MNS::HTTP_METHOD::TRACE:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "TRACE", String::kNormalString, 5));
+					break;
+			}
 		}
 	}
 
 	static void GetHttpVersion(Local<String> property, const PropertyCallbackInfo<Value> &args) {
 		MNS::SocketData *data = static_cast<MNS::SocketData *>(args.Holder()->GetAlignedPointerFromInternalField(0));
 
-		switch (data->request->httpVersion) {
-			case MNS::HTTP_VERSION::HTTP_1_0:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "1.0", String::kNormalString, 3));
-				break;
-			case MNS::HTTP_VERSION::HTTP_1_1:
-				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "1.1", String::kNormalString, 3));
-				break;
+		if(data) {
+			switch (data->request->httpVersion) {
+				case MNS::HTTP_VERSION::HTTP_1_0:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "1.0", String::kNormalString, 3));
+					break;
+				case MNS::HTTP_VERSION::HTTP_1_1:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "1.1", String::kNormalString, 3));
+					break;
+			}
 		}
 	}
 
@@ -92,12 +99,14 @@ struct HttpRequest {
 
 		MNS::SocketData *data = static_cast<MNS::SocketData *>(args.Holder()->GetPrototype()->ToObject()->GetAlignedPointerFromInternalField(0));
 
-		std::map<std::string, std::string>::const_iterator it = data->request->headers.find(std::string(*name, name.length()));
+		if(data) {
+			std::map<std::string, std::string>::const_iterator it = data->request->headers.find(std::string(*name, name.length()));
 
-		if(it != data->request->headers.end()) {
-			args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *)it->second.c_str(), String::kNormalString, it->second.length()));
-		} else {
-			args.GetReturnValue().Set(Undefined(args.GetIsolate()));
+			if (it != data->request->headers.end()) {
+				args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) it->second.c_str(), String::kNormalString, it->second.length()));
+			} else {
+				args.GetReturnValue().Set(Undefined(args.GetIsolate()));
+			}
 		}
 	}
 
@@ -142,36 +151,45 @@ struct HttpResponse {
 		MNS::SocketData *data = static_cast<MNS::SocketData *>(args.Holder()->GetAlignedPointerFromInternalField(0));
 
 		// TODO: Make sure it is heap allocated; GC not released the value
-		String::Utf8Value str(args[0]);
-		data->response->write(*str, str.length());
+		if(data) {
+			String::Utf8Value str(args[0]);
+			data->response->write(*str, str.length());
+		}
 	}
 
 	static void End(const FunctionCallbackInfo<Value> &args) {
 		Isolate *isolate = args.GetIsolate();
 		MNS::SocketData *data = (MNS::SocketData *) args.Holder()->GetAlignedPointerFromInternalField(0);
 
-		// TODO: Make sure it is heap allocated; GC not released the value
-		String::Utf8Value str(args[0]);
+		if(data) {
+			// TODO: Make sure it is heap allocated; GC not released the value
+			String::Utf8Value str(args[0]);
 
-		// Release the handle
-		static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder)->Reset();
-		delete (static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder));
-		//static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder)->~Persistent<Object>();
+			// Release the handle
+			static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder)->Reset();
+			delete (static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder));
+			//static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder)->~Persistent<Object>();
 
-		static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder)->Reset();
-		delete (static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder));
-		//static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder)->~Persistent<Object>();
+			static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder)->Reset();
+			delete (static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder));
+			//static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder)->~Persistent<Object>();
 
-		data->response->end(*str, str.length());
+			data->response->end(*str, str.length());
 
-		Local<Value> finishCallback = args.Holder()->GetInternalField(1);
-		if (!finishCallback->IsUndefined()) {
-			Local<Function>::Cast(finishCallback)->Call(isolate->GetCurrentContext()->Global(), 0, nullptr);
-		}
+			data->nodeRequestPlaceholder = nullptr;
+			data->nodeResponsePlaceholder = nullptr;
 
-		Local<Value> endCallback = args.Holder()->GetInternalField(2);
-		if (!endCallback->IsUndefined()) {
-			Local<Function>::Cast(endCallback)->Call(isolate->GetCurrentContext()->Global(), 0, nullptr);
+			Local<Value> finishCallback = args.Holder()->GetInternalField(1);
+			if (!finishCallback->IsUndefined()) {
+				Local<Function>::Cast(finishCallback)->Call(isolate->GetCurrentContext()->Global(), 0, nullptr);
+			}
+
+			Local<Value> endCallback = args.Holder()->GetInternalField(2);
+			if (!endCallback->IsUndefined()) {
+				Local<Function>::Cast(endCallback)->Call(isolate->GetCurrentContext()->Global(), 0, nullptr);
+			}
+
+			args.Holder()->SetAlignedPointerInInternalField(0, nullptr);
 		}
 	}
 
@@ -181,17 +199,21 @@ struct HttpResponse {
 	static void IsFinished(Local<String> property, const PropertyCallbackInfo<Value> &args) {
 		MNS::SocketData *data = (MNS::SocketData *) args.Holder()->GetAlignedPointerFromInternalField(0);
 
-		args.GetReturnValue().Set(Boolean::New(args.GetIsolate(), data->response->finished));
+		if(data) {
+			args.GetReturnValue().Set(Boolean::New(args.GetIsolate(), data->response->finished));
+		}
 	}
 
 	static void SetHeader(const FunctionCallbackInfo<Value> &args) {
 		if (args.Length() == 2 && args[0]->IsString() && args[1]->IsString()) {
 			MNS::SocketData *data = (MNS::SocketData *) args.Holder()->GetAlignedPointerFromInternalField(0);
 
-			String::Utf8Value name(args[0]);
-			String::Utf8Value value(args[1]);
+			if(data) {
+				String::Utf8Value name(args[0]->ToString());
+				String::Utf8Value value(args[1]->ToString());
 
-			data->response->setHeader(std::string(*name, name.length()), std::string(*value, value.length()));
+				data->response->setHeader(std::string(*name, name.length()), std::string(*value, value.length()));
+			}
 		}
 	}
 
@@ -288,6 +310,29 @@ struct Http {
 				}
 
 				isolate->RunMicrotasks();
+			});
+
+			server->onHttpCancel([isolate](MNS::SocketData *data) {
+				HandleScope hs(isolate);
+
+				if(data->nodeRequestPlaceholder) {
+					Local<Object> reqObject = Local<Object>::New(isolate, *(Persistent<Object> *)data->nodeRequestPlaceholder);
+					reqObject->SetAlignedPointerInInternalField(0, nullptr);
+					reqObject->GetPrototype()->ToObject()->SetAlignedPointerInInternalField(0, nullptr);
+
+					// Release the handle
+					static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder)->Reset();
+					delete(static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder));
+				}
+
+				if(data->nodeResponsePlaceholder) {
+					Local<Object> resObject = Local<Object>::New(isolate, *(Persistent<Object> *)data->nodeResponsePlaceholder);
+					resObject->SetAlignedPointerInInternalField(0, nullptr);
+
+					// Release the handle
+					static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder)->Reset();
+					delete(static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder));
+				}
 			});
 		}
 

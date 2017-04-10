@@ -1,4 +1,4 @@
-CPP_SHARED := -std=c++11 -O3 -fno-builtin -march=native -mtune=native -I ../src -shared -fPIC ../src/Http.cpp ../src/Request.cpp ../src/Response.cpp ../src/Server.cpp ../src/Socket.cpp mns.cc
+CPP_SHARED := -std=c++11 -O3 -I ../src -shared -fPIC ../src/Http.cpp ../src/Request.cpp ../src/Response.cpp ../src/Server.cpp ../src/Socket.cpp mns.cc
 CPP_OSX := -stdlib=libc++ -mmacosx-version-min=10.7 -undefined dynamic_lookup
 
 default:
@@ -9,6 +9,7 @@ default:
 	NODE=targets/node-v7.8.0 ABI=51 make `(uname -s)`
 	#cp ../README.md dist/README.md
 	#cp ../LICENSE dist/LICENSE
+	cp package.json dist/package.json
 	cp index.js dist/index.js
 	for f in dist/*.node; do chmod +x $$f; done
 targets:
