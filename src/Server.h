@@ -111,6 +111,12 @@ namespace MNS {
 	    ///Registers a callback function, when a request is received
 	    void onHttpRequest(const std::function<void(MNS::SocketData *)> &);
 
+	    /// Callback holder
+	    std::function<void(MNS::SocketData *)> onHttpCancelHandler;
+
+	    ///Registers a callback function, when a request/response is canceled
+	    void onHttpCancel(const std::function<void(MNS::SocketData *)> &);
+
 	    /// Runs the poll
 	    void run();
 

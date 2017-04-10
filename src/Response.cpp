@@ -98,7 +98,7 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 	this->setHeader(std::string("Date", 4), MNS::Server::currTime);
 
 	MNS::Request *request = this->socketData->request;
-	char *rb = this->responseBuffer + this->bufferLen;
+	char *rb = this->responseBuffer;
 	// First print the status code
 	rb = (char *)mempcpy(rb, (request->httpVersion==HTTP_VERSION::HTTP_1_1)?"HTTP/1.1 ":"HTTP/1.0 ", 9);
 	// Copy the response MSG
@@ -133,7 +133,8 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 
 	this->bufferLen += offset;
 
-	uv_poll_start(this->socketData->poll_h, UV_WRITABLE, MNS::Server::onWriteData);
+	if(!uv_is_closing((uv_handle_t*)this->socketData->poll_h))
+		uv_poll_start(this->socketData->poll_h, UV_WRITABLE, MNS::Server::onWriteData);
 	this->finished = true;
 
 	return 0;

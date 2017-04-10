@@ -57,6 +57,8 @@ namespace MNS {
 	     * @return Buffer containing the request data
 	     */
         char* getBuffer();
+	    ssize_t getBufferSize();
+	    void resizeBuffer(int newSize);
 
 	    /**
 	     * Returns the lenght of the request data
@@ -113,6 +115,8 @@ namespace MNS {
 	    ssize_t lastParsePos;
 	    /// Internal buffer length
 	    ssize_t bufferLen;
+
+	    ssize_t bufferSize;
 
 	    /// SocketData
         const MNS::SocketData *socketData;

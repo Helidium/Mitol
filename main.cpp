@@ -23,7 +23,7 @@ int main() {
 	server->onHttpRequest([](MNS::SocketData *data) {
 		MNS::Response *response = data->response;
 
-		response->end("Hello world!", 12);
+		response->end("Hello world!Hello world!Hello world!Hello world!Hello world!Hello world!Hello world!Hello world!Hello world!Hello world!", 120);
 	});
 	server->listen(8080);
 	server->run();

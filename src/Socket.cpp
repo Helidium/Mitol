@@ -11,6 +11,8 @@ MNS::SocketData::SocketData(uv_poll_t *poll_h, int fd, SOCKET_TYPE type, MNS::Se
 	this->server = server;
 	this->request = NULL;
 	this->response = NULL;
+	this->nodeRequestPlaceholder = nullptr;
+	this->nodeResponsePlaceholder = nullptr;
 	if (type != SOCKET_TYPE::LISTENING) {
 		this->request = new MNS::Request(this);
 		this->response = new MNS::Response(this);
@@ -24,6 +26,8 @@ MNS::SocketData::~SocketData() {
 	this->request = NULL;
 	this->response = NULL;
 	this->server = NULL;
+	this->nodeRequestPlaceholder = nullptr;
+	this->nodeResponsePlaceholder = nullptr;
 }
 
 int MNS::Socket::createListening(int port) {

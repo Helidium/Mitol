@@ -20,6 +20,7 @@ MNS::Request::Request(const MNS::SocketData *socketData) {
 	this->finished = false;
 	this->lastParsePos = 0;
 	this->buffer = (char *) malloc(4096);
+	this->bufferSize = 4096;
 	this->state = REQUEST_STATE::CONNECTING;
 }
 
@@ -29,6 +30,15 @@ bool MNS::Request::isFinished() {
 
 char *MNS::Request::getBuffer() {
 	return this->buffer;
+}
+
+ssize_t MNS::Request::getBufferSize() {
+	return this->bufferSize;
+}
+
+void MNS::Request::resizeBuffer(int ns) {
+	this->buffer = (char *)realloc(this->buffer, ns);
+	this->bufferSize = ns;
 }
 
 ssize_t MNS::Request::getBufferLen() {
@@ -83,11 +93,12 @@ int MNS::Request::Parse(ssize_t requestLen) {
 					this->method = HTTP_METHOD::TRACE;
 					i += 5;
 				}
+
 				parserState = PARSER_STATE::URL;
 				break;
 			case PARSER_STATE::URL:
 				this->url = this->buffer + i;
-				i = (int)((char*)memchr(this->url, ' ', requestLen) - this->buffer);
+				i = (int)((char*)memchr(this->url, ' ', requestLen - i) - this->buffer);
 				buffer[i] = '\0';
 
 				i += 7;
@@ -111,14 +122,14 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				i += (buffer[i + 1] == ' '?2:1);
 
 				char *value = buffer + i;
-				i = (int)((char *)memchr(buffer+i, '\r', requestLen) - buffer);
+				i = (int)((char *)memchr(buffer+i, '\r', requestLen - i) - buffer);
 				buffer[i++] = '\0';
 
 				//this->headers[std::string(name, nameLen)] = std::string(value, valueLen);
 				this->headers[name] = value;
 
 				// Finished parsing headers
-				if (buffer[i + 1] == '\r') {
+				if (buffer[i + 1] == '\r' && buffer[i + 2] == '\n') {
 					// Possibility of pipelining
 					if(this->method == HTTP_METHOD::GET || this->method == HTTP_METHOD::HEAD) {
 						// More pipelined requests
