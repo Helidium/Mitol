@@ -1,4 +1,4 @@
-CPP_SHARED := -std=c++0x -O3 -I ../src -shared -fPIC ../src/Http.cpp ../src/Request.cpp ../src/Response.cpp ../src/Server.cpp ../src/Socket.cpp mns.cc
+CPP_SHARED := -std=c++11 -O3 -I ../src -shared -fPIC ../src/Http.cpp ../src/Request.cpp ../src/Response.cpp ../src/Server.cpp ../src/Socket.cpp mns.cc
 CPP_DARWIN := -stdlib=libc++ -mmacosx-version-min=10.7 -undefined dynamic_lookup
 
 default:

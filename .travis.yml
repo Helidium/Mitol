@@ -5,11 +5,12 @@ os:
   - osx
 
 compiler:
-  - gcc
+  - clang
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
 
 script:
+  - export CXX=g++-4.8
   - cd node
   - make
