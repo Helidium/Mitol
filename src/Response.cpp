@@ -4,6 +4,15 @@
 
 #include "Response.h"
 
+#ifdef __APPLE__   /* Fails for Macs, need to define mempcpy
+                      explicitly */
+/* From Gnulib */
+void *mempcpy(void *dest, const void *src, size_t n) {
+  return (char *) memcpy(dest, src, n) + n;
+}
+
+#endif
+
 MNS::Response::Response(const MNS::SocketData *socketData) {
 	this->finished = false;
 	this->socketData = socketData;

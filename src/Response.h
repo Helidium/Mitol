@@ -15,15 +15,6 @@
 #include "Request.h"
 #include "Socket.h"
 
-#ifdef __APPLE__   /* Fails for Macs, need to define mempcpy
-                      explicitly */
-/* From Gnulib */
-void *mempcpy(void *dest, const void *src, size_t n) {
-  return (char *) memcpy(dest, src, n) + n;
-}
-
-#endif
-
 namespace MNS {
 	// Forward declaration
 	class SocketData;
