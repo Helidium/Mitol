@@ -6,7 +6,7 @@ Aim of the project is to offer a drop in replacement for NodeJS http server
 ## Benchmarks
 ![Benchmark](https://github.com/Helidium/Mitol/raw/master/misc/Mitol_Bench.jpg)
 
-### How to use
+## How to use
 Currently only Linux has been tested. To install the project make sure you have build-tools installed.
 To build the node packages do the following:
 ```bash
