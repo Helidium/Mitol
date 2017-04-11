@@ -13,6 +13,5 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
 
 script:
-  - g++-4.8
   - cd node
   - make
