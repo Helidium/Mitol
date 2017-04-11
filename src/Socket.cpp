@@ -72,12 +72,20 @@ int MNS::Socket::createListening(int port) {
 	freeaddrinfo(result);
 
 	int y_int = 1;
+#ifdef __linux__
 	if ((setsockopt(sfd, SOL_SOCKET, SO_KEEPALIVE, &y_int, sizeof(int)) == -1) ||
 	    (setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY, &y_int, sizeof(int)) == -1) ||
 	    (setsockopt(sfd, IPPROTO_TCP, TCP_QUICKACK, &y_int, sizeof(int)) == -1)) {
 		// TODO: Return an error
 		return -1;
 	}
+#elif __APPLE__
+	if ((setsockopt(sfd, SOL_SOCKET, SO_KEEPALIVE, &y_int, sizeof(int)) == -1) ||
+	    (setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY, &y_int, sizeof(int)) == -1)) {
+		// TODO: Return an error
+		return -1;
+	}
+#endif
 	Socket::makeNonBlocking(sfd);
 
 	if (::listen(sfd, 4096) == -1) {

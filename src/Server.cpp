@@ -16,7 +16,12 @@ void MNS::Server::onConnect(uv_poll_t *handle, int status, int events) {
 		const MNS::Server *server = data->server;
 		socklen_t addr_size = 0;
 		sockaddr_in sadr;
+#ifdef __linux__
 		int csock = accept4(data->fd, (sockaddr *) &sadr, &addr_size, SOCK_NONBLOCK);
+#elif __APPLE__
+		int csock = accept(data->fd, (sockaddr *) &sadr, &addr_size);
+		if(csock >= 0) MNS::Socket::makeNonBlocking(csock);
+#endif
 
 		if(csock >= 0) { // If valid socket
 			int y_int = 1;
