@@ -7,8 +7,8 @@ default:
 	NODE=targets/node-v5.12.0 ABI=47 make `(uname -s)`
 	NODE=targets/node-v6.10.2 ABI=48 make `(uname -s)`
 	NODE=targets/node-v7.8.0 ABI=51 make `(uname -s)`
-	#cp ../README.md dist/README.md
-	#cp ../LICENSE dist/LICENSE
+	cp ../README.md dist/README.md
+	cp ../LICENSE dist/LICENSE
 	cp package.json dist/package.json
 	cp index.js dist/index.js
 	for f in dist/*.node; do chmod +x $$f; done
