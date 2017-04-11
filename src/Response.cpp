@@ -103,8 +103,8 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 	}
 
 	int offset = 0;
-	this->setHeader(std::string("Content-Length", 14), std::to_string(dataLen));
-	this->setHeader(std::string("Date", 4), MNS::Server::currTime);
+	//this->setHeader(std::string("Date", 4), MNS::Server::currTime);
+	//this->setHeader(std::string("Content-Length", 14), std::to_string(dataLen));
 
 	MNS::Request *request = this->socketData->request;
 	char *rb = this->responseBuffer;
@@ -114,6 +114,23 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 	std::string msg = MNS::Server::response_msgs[this->statusCode];
 	rb = (char *)mempcpy(rb, msg.c_str(), msg.length());
 	offset += msg.length() + 9;
+
+	// Set the static headers
+
+	// Content-Length
+	std::string strDataLen = std::to_string(dataLen);
+	rb = (char *)mempcpy(rb, "Content-Length", 14);
+	rb = (char *)mempcpy(rb, ": ", 2);
+	rb = (char *)mempcpy(rb, strDataLen.c_str(), strDataLen.length());
+	rb = (char *)mempcpy(rb, "\r\n", 2);
+	offset += strDataLen.length() + 18;
+
+	// Date
+	rb = (char *)mempcpy(rb, "Date", 4);
+	rb = (char *)mempcpy(rb, ": ", 2);
+	rb = (char *)mempcpy(rb, MNS::Server::currTime.c_str(), MNS::Server::currTime.length());
+	rb = (char *)mempcpy(rb, "\r\n", 2);
+	offset += MNS::Server::currTime.length() + 8;
 
 	// Copy the headers
 	for(std::map<std::string, std::string>::const_iterator header = this->headers.begin(); header != this->headers.end(); header++) {
