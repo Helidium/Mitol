@@ -5,6 +5,15 @@
 #ifndef MNS_RESPONSE_H
 #define MNS_RESPONSE_H
 
+#ifdef __APPLE__   /* Fails for Macs, need to define mempcpy
+                      explicitly */
+/* From Gnulib */
+void *mempcpy(void *dest, const void *src, size_t n) {
+  return (char *) memcpy(dest, src, n) + n;
+}
+
+#endif
+
 #include <set>
 #include <map>
 #include <string>
