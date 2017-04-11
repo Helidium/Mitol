@@ -5,6 +5,16 @@
 #ifndef MNS_RESPONSE_H
 #define MNS_RESPONSE_H
 
+#include <set>
+#include <map>
+#include <string>
+#include <uv.h>
+#include <cstring>
+#include <stddef.h>
+#include "Variables.h"
+#include "Request.h"
+#include "Socket.h"
+
 #ifdef __APPLE__   /* Fails for Macs, need to define mempcpy
                       explicitly */
 /* From Gnulib */
@@ -13,15 +23,6 @@ void *mempcpy(void *dest, const void *src, size_t n) {
 }
 
 #endif
-
-#include <set>
-#include <map>
-#include <string>
-#include <uv.h>
-#include <cstring>
-#include "Variables.h"
-#include "Request.h"
-#include "Socket.h"
 
 namespace MNS {
 	// Forward declaration

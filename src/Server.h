@@ -25,6 +25,10 @@
 #include "Request.h"
 #include "Response.h"
 
+#ifndef SOCK_NONBLOCK
+	#define SOCK_NONBLOCK O_NONBLOCK
+#endif
+
 namespace MNS {
 	// Forward declaration
 	class SocketData;
