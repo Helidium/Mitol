@@ -7,7 +7,7 @@ Aim of the project is to offer a drop in replacement for NodeJS http server
 ![Benchmark](https://github.com/Helidium/Mitol/raw/master/misc/Mitol_Bench.jpg)
 
 ## How to use
-Currently only Linux has been tested. MacOSX will not build because of missing mempcpy implementation. To install the project make sure you have build-tools installed.
+Currently only Linux has been tested. To install the project make sure you have build-tools installed.
 To build the node packages do the following:
 ```bash
 cd node
