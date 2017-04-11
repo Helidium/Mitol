@@ -127,7 +127,7 @@ namespace MNS {
         ~Server();
     private:
 	    /// Fd of the listening socket
-        int listeningSocket=0;
+        int listeningSocket;
 
 	    /// Handle for second timer
 	    uv_timer_t *timer_h;

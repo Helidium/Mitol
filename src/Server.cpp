@@ -181,6 +181,7 @@ MNS::Server::Server() {
 	this->onHttpCancelHandler = NULL;
 	this->onHttpConnectionHandler = NULL;
 	this->onHttpRequestHandler = NULL;
+	this->listeningSocket = 0;
 }
 
 void MNS::Server::listen(int port) {
