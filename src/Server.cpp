@@ -153,7 +153,9 @@ void MNS::Server::onWriteData(uv_poll_t *handle, int status, int events) {
 					uv_poll_start(handle, UV_READABLE, onReadData);
 			} else {
 				// Request not finished, pipelining, continue serving data
-				onReadDataPipelined(handle, 0, 0);
+				if(!uv_is_closing((uv_handle_t*)handle))
+					uv_poll_start(handle, UV_WRITABLE, onReadDataPipelined);
+				//onReadDataPipelined(handle, 0, 0);
 			}
 		} else if (numSent < 0) {
 			int err = errno;
