@@ -1,5 +1,5 @@
 CPP_SHARED := -std=c++11 -O3 -I ../src -shared -fPIC ../src/Http.cpp ../src/Request.cpp ../src/Response.cpp ../src/Server.cpp ../src/Socket.cpp mns.cc
-CPP_OSX := -stdlib=libc++ -mmacosx-version-min=10.7 -undefined dynamic_lookup
+CPP_DARWIN := -stdlib=libc++ -mmacosx-version-min=10.7 -undefined dynamic_lookup
 
 default:
 	make targets
@@ -22,8 +22,8 @@ targets:
 Linux:
 	g++ $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -s -o dist/mns_linux_$$ABI.node
 Darwin:
-	g++ $(CPP_SHARED) $(CPP_OSX) -I $$NODE/include/node -o dist/mns_darwin_$$ABI.node
+	g++ $(CPP_SHARED) $(CPP_DARWIN) -I $$NODE/include/node -o dist/mns_darwin_$$ABI.node
 .PHONY: clean
 clean:
-	rm -R dist
+	rm -rf dist
 	rm -rf targets
