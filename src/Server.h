@@ -13,7 +13,6 @@
 #include <fcntl.h>
 #include <netinet/tcp.h>
 #include <netinet/in.h>
-#include <sys/epoll.h>
 #include <uv.h>
 #include <stdio.h>
 #include <unordered_map>
