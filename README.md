@@ -1,4 +1,4 @@
-# Mitol
+# ![Mitol](https://github.com/Helidium/Mitol/blob/master/docs/images/mitol.svg) Mitol
 Aim of the project is to offer a drop in replacement for NodeJS http server
 
 [![Build Status](https://travis-ci.org/Helidium/Mitol.svg?branch=master)](https://travis-ci.org/Helidium/Mitol)
