@@ -1,4 +1,6 @@
-<img src="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png" alt="Mitol" style="height:50px;">
+<a href="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png">
+<img src="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png" alt="Mitol" width="190">
+</a>
 
 Lightweight, high performance NodeJS Server.
 
