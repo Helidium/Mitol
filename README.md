@@ -1,4 +1,5 @@
-# <img src="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png" alt="Mitol" style="height:50px;">
+<img src="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png" alt="Mitol" style="height:50px;">
+
 Lightweight, high performance NodeJS Server.
 
 [![Build Status](https://travis-ci.org/Helidium/Mitol.svg?branch=master)](https://travis-ci.org/Helidium/Mitol)
