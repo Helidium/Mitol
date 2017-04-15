@@ -1,7 +1,18 @@
-# ![Mitol](https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png)
-Aim of the project is to offer a drop in replacement for NodeJS http server
+# <img src="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png" alt="Mitol" style="height:50px;">
+Lightweight, high performance NodeJS Server.
 
 [![Build Status](https://travis-ci.org/Helidium/Mitol.svg?branch=master)](https://travis-ci.org/Helidium/Mitol)
+
+## Project description
+Project was born out of the need for **faster** performing server using NodeJS.
+Current implementation lacks focus on **performance**, which can be achieved by moving parts of code to native C++ bindings.
+
+**Aim of the project** is to offer an alternative solution, which is using less **memory** and **CPU** power, giving you available resources for your code or handling higher number of requests.
+
+### Advantages
++ **No changes required**: Just replace require('http') with require('mns')
++ **Top Speed**: Roughly 3x better performance than integrated server
++ **Additional features**: Work in progress (Static file server, Router, ...)
 
 ## Benchmarks
 ![Benchmark](https://github.com/Helidium/Mitol/raw/master/misc/Mitol_Bench.jpg)
