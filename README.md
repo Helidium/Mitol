@@ -5,6 +5,7 @@
 Lightweight, high performance NodeJS Server.
 
 [![Build Status](https://travis-ci.org/Helidium/Mitol.svg?branch=master)](https://travis-ci.org/Helidium/Mitol)
+[![Coverity Status](https://img.shields.io/coverity/scan/12489.svg)](https://scan.coverity.com/projects/helidium-mitol)
 
 ## Project description
 Project was born out of the need for **faster** performing server using NodeJS.
