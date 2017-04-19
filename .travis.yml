@@ -4,14 +4,31 @@ language: c++
 
 os:
   - linux
-  - osx
+#  - osx
+
+env:
+  global:
+    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+    #   via the "travis encrypt" command using the project repo's public key
+    - secure: "BS1Rzv3Z3jo17l5XLb+gggkQ1j6HJguUW2h0D72lPkbWVdndIMhH+Cr+RRcaznCH4CbQ1csK9KtpsqUDMSP4NRV/r1lHFR/s4ILz1kB9HmGwBy8jgX5hhFvNmQ91QdMmS1HDhkW5QMi0RVSbdWQlaFWrzb+g2VlpnxDZtY9DkTVvGJ8y7TAnrxPPukNE7XeQRfL5QSeYzRqEdpMd4aOZ5SZd97q4fYUFId9mjN7/kfMaeTF32WmVdGogNn/TkYZi3dO3mPJRvxJlK0kv0uc94Wy6CCxhy5CQS9OjFFNV/x+L4GA3bsnMCxWpgM+XIqmodfdnjuLeAOeVZN+Z/zhwUTSuqqyYcSjdAlsxpwByX9diocxeLokJmwR7G/B9xB3nxtbQjWDq7vJ4CDPfe7Xfy735h8VO6kLC45PhHs/tl2UX7Qsy0mSTiriIpCmnV74UVX+M/BKqtctymqXHjpUney/ZCNdyi2HpD/W3F8U90rhDaEMVh6n/a1jSs8BTvlmdfeBgVcP/q/q86FXzRapsTms8pneTh1hg0Cjtaa+03u1YTQQPP0XoYefiujq94P1M+DW3fJxsBLtJAvP9QA9uGLKXdi/xziphq0bPx+WZbEWTPODhY0UL9CN+bDLJeDj3lKkhmGbE0ztULKoHGegQHKXYCrCqPhfyaT7M+npa0OM="
 
 compiler:
   - g++
 
 before_install:
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 #  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
 
 script:
   - cd node
   - make
+
+addons:
+  coverity_scan:
+    project:
+      name: "Helidium/Mitol"
+      description: "Build submitted via Travis CI"
+    notification_email: helidium@gmail.com
+    build_command_prepend: "cd node"
+    build_command:   "make -j 4"
+    branch_pattern: master
