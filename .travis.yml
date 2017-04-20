@@ -30,5 +30,5 @@ addons:
       description: "Build submitted via Travis CI"
     notification_email: helidium@gmail.com
     build_command_prepend: "cmake ."
-    build_command:   "make clean && make"
+    build_command:   "make"
     branch_pattern: master
