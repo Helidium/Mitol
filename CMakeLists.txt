@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.2)
 project(MNS)
 
 include_directories(includes/node-v7.1.0/include/node)
