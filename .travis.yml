@@ -16,7 +16,9 @@ compiler:
   - g++
 
 before_install:
-  - sudo apt-get install libuv-dev
+  # install libuv >= 1.0.0
+  - curl -L https://github.com/libuv/libuv/archive/v1.0.0.tar.gz | tar xzf -
+  - (cd libuv-1.0.0 && ./autogen.sh && ./configure --prefix=/usr && make && sudo make install)
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 #  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
 
