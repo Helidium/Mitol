@@ -21,7 +21,13 @@ MNS::Request::Request(const MNS::SocketData *socketData) {
 	this->lastParsePos = 0;
 	this->buffer = (char *) malloc(4096);
 	this->bufferSize = 4096;
+	this->bufferLen = 0;
 	this->state = REQUEST_STATE::CONNECTING;
+
+	this->httpVersion = MNS::HTTP_VERSION::UNKNOWN;
+	this->method = MNS::HTTP_METHOD::UNKNOWN;
+	this->socket = -1;
+	this->url = NULL;
 }
 
 bool MNS::Request::isFinished() {

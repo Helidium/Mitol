@@ -23,11 +23,17 @@ MNS::Response::Response(const MNS::SocketData *socketData) {
 	this->buffer = (char *)malloc(4096);
 	this->responseBuffer = (char *)malloc(4096);
 	this->bufferSize = 4096;
+	this->headersSent = false;
+	this->sendDate = true;
+	this->statusMessage = NULL;
 	//this->response.reserve(1024);
 }
 
 int MNS::Response::clear() {
 	this->finished = false;
+	this->headersSent = false;
+	this->sendDate = true;
+	this->statusMessage = NULL;
 	//this->response.clear();
 
 	this->bufferLen = 0;
@@ -126,11 +132,13 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 	offset += strDataLen.length() + 18;
 
 	// Date
-	rb = (char *)mempcpy(rb, "Date", 4);
-	rb = (char *)mempcpy(rb, ": ", 2);
-	rb = (char *)mempcpy(rb, MNS::Server::currTime.c_str(), MNS::Server::currTime.length());
-	rb = (char *)mempcpy(rb, "\r\n", 2);
-	offset += MNS::Server::currTime.length() + 8;
+	if(this->sendDate) {
+		rb = (char *) mempcpy(rb, "Date", 4);
+		rb = (char *) mempcpy(rb, ": ", 2);
+		rb = (char *) mempcpy(rb, MNS::Server::currTime.c_str(), MNS::Server::currTime.length());
+		rb = (char *) mempcpy(rb, "\r\n", 2);
+		offset += MNS::Server::currTime.length() + 8;
+	}
 
 	// Copy the headers
 	for(std::map<std::string, std::string>::const_iterator header = this->headers.begin(); header != this->headers.end(); header++) {

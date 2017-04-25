@@ -53,7 +53,9 @@ int MNS::Socket::createListening(int port) {
 
 		int y_int = 1;
 		//setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &y_int, sizeof(int));
-		setsockopt(sfd, SOL_SOCKET, SO_REUSEPORT, &y_int, sizeof(int));
+		if(setsockopt(sfd, SOL_SOCKET, SO_REUSEPORT, &y_int, sizeof(int)) == -1) {
+			printf("Unable to reuse port!n\n");
+		}
 
 		s = bind(sfd, rp->ai_addr, rp->ai_addrlen);
 		if (s == 0) {
@@ -64,12 +66,12 @@ int MNS::Socket::createListening(int port) {
 		close(sfd);
 	}
 
+	freeaddrinfo(result);
+
 	if (rp == NULL) {
 		fprintf(stderr, "Could not bind\n");
 		return -1;
 	}
-
-	freeaddrinfo(result);
 
 	int y_int = 1;
 #ifdef __linux__
@@ -89,6 +91,7 @@ int MNS::Socket::createListening(int port) {
 	Socket::makeNonBlocking(sfd);
 
 	if (::listen(sfd, 4096) == -1) {
+		close(sfd);
 		// TODO: Return an error
 		return -1;
 	}

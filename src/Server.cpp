@@ -25,9 +25,13 @@ void MNS::Server::onConnect(uv_poll_t *handle, int status, int events) {
 
 		if(csock >= 0) { // If valid socket
 			int y_int = 1;
-			setsockopt(csock, SOL_SOCKET, SO_KEEPALIVE, &y_int, sizeof(int));
+			if(setsockopt(csock, SOL_SOCKET, SO_KEEPALIVE, &y_int, sizeof(int)) == -1) {
+				// NOOP
+			}
 #ifdef __linux__
-			setsockopt(csock, IPPROTO_TCP, TCP_NODELAY, &y_int, sizeof(int));
+			if(setsockopt(csock, IPPROTO_TCP, TCP_NODELAY, &y_int, sizeof(int)) == -1) {
+				// NOOP
+			}
 #endif
 			//setsockopt(csock, IPPROTO_TCP, TCP_QUICKACK, &y_int, sizeof(int));
 
@@ -189,6 +193,7 @@ MNS::Server::Server() {
 	this->onHttpConnectionHandler = NULL;
 	this->onHttpRequestHandler = NULL;
 	this->listeningSocket = 0;
+	this->timer_h = NULL;
 }
 
 void MNS::Server::listen(int port) {

@@ -11,12 +11,14 @@
 namespace MNS {
     /// HTTP_VERSION
     enum HTTP_VERSION {
+	    UNKNOWN,
         HTTP_1_0,
         HTTP_1_1
     };
 
 	/// HTTP_METHOD
     enum HTTP_METHOD {
+	    UNKNOWN,
         OPTIONS,
         GET,
         HEAD,
