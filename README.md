@@ -77,6 +77,7 @@ if (cluster.isMaster) {
 
 ## Thanks
 My Family and Friends for supporting me!<br/>
+All the fans for believing in the project!<br/>
 [Leandro A. F. Pereira](https://github.com/lpereira) For his wonderful Lwan project.<br/>
 [Alex Hultman](https://github.com/alexhultman) For his wonderful uWebSockets project.<br/>
 [TechEmpower](https://www.techempower.com/benchmarks/) For Server benchmarks.<br/>
