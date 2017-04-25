@@ -33,7 +33,7 @@ MNS::SocketData::~SocketData() {
 int MNS::Socket::createListening(int port) {
 	struct addrinfo hints;
 	struct addrinfo *result, *rp;
-	int s, sfd;
+	int s, sfd=-1;
 
 	memset(&hints, 0, sizeof(struct addrinfo));
 	hints.ai_family = AF_UNSPEC;     /* Return IPv4 and IPv6 choices */
@@ -70,7 +70,8 @@ int MNS::Socket::createListening(int port) {
 
 	if (rp == NULL) {
 		fprintf(stderr, "Could not bind\n");
-		close(sfd);
+		if(sfd != -1)
+			close(sfd);
 		return -1;
 	}
 
