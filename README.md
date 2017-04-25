@@ -7,19 +7,27 @@ Lightweight, high performance NodeJS Server.
 [![Build Status](https://travis-ci.org/Helidium/Mitol.svg?branch=master)](https://travis-ci.org/Helidium/Mitol)
 [![Coverity Status](https://img.shields.io/coverity/scan/12489.svg)](https://scan.coverity.com/projects/helidium-mitol)
 
+***
+
 ## Project description
 Project was born out of the need for **faster** performing server using NodeJS.
 Current implementation lacks focus on **performance**, which can be achieved by moving parts of code to native C++ bindings.
 
 **Aim of the project** is to offer an alternative solution, which is using less **memory** and **CPU** power, giving you available resources for your code or handling higher number of requests.
 
+***
+
 ### Advantages
 + **No changes required**: Just replace require('http') with require('mns')
 + **Top Speed**: Roughly 3x better performance than integrated server
 + **Additional features**: Work in progress (Static file server, Router, ...)
 
+***
+
 ## Benchmarks
 ![Benchmark](https://github.com/Helidium/Mitol/raw/master/misc/Mitol_Bench.jpg)
+
+***
 
 ## How to use
 Currently only Linux has been tested. To install the project make sure you have build-tools installed.
@@ -75,6 +83,8 @@ if (cluster.isMaster) {
 }
 ```
 
+***
+
 ## Thanks
 My Family and Friends for supporting me!<br/>
 All the fans for believing in the project!<br/>
@@ -84,3 +94,6 @@ All the fans for believing in the project!<br/>
 [GitHub](https://github.com) For code hosting.<br/>
 [Travis](https://travis-ci.org) For code testing.<br/>
 [Coverity](https://scan.coverity.com) For code defects check<br/>
+
+***
+Copyright (c) 2017 Mitol Project - Released under the Zlib license.
