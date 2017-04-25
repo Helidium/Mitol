@@ -24,8 +24,8 @@ MNS::Request::Request(const MNS::SocketData *socketData) {
 	this->bufferLen = 0;
 	this->state = REQUEST_STATE::CONNECTING;
 
-	this->httpVersion = MNS::HTTP_VERSION::UNKNOWN;
-	this->method = MNS::HTTP_METHOD::UNKNOWN;
+	this->httpVersion = MNS::HTTP_VERSION::UNKNOWN_VERSION;
+	this->method = MNS::HTTP_METHOD::UNKNOWN_METHOD;
 	this->socket = -1;
 	this->url = NULL;
 }
