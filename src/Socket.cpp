@@ -70,8 +70,6 @@ int MNS::Socket::createListening(int port) {
 
 	if (rp == NULL) {
 		fprintf(stderr, "Could not bind\n");
-		if(sfd != -1)
-			close(sfd);
 		return -1;
 	}
 
