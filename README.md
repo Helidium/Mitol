@@ -74,3 +74,12 @@ if (cluster.isMaster) {
     });
 }
 ```
+
+## Thanks
+My Family and Friends for supporting me!<br/>
+[Leandro A. F. Pereira](https://github.com/lpereira) For his wonderful Lwan project.<br/>
+[Alex Hultman](https://github.com/alexhultman) For his wonderful uWebSockets project.<br/>
+[TechEmpower](https://www.techempower.com/benchmarks/) For Server benchmarks.<br/>
+[GitHub](https://github.com) For code hosting.<br/>
+[Travis](https://travis-ci.org) For code testing.<br/>
+[Coverity](https://scan.coverity.com) For code defects check<br/>
