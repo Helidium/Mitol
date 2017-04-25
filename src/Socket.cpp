@@ -70,6 +70,7 @@ int MNS::Socket::createListening(int port) {
 
 	if (rp == NULL) {
 		fprintf(stderr, "Could not bind\n");
+		close(sfd);
 		return -1;
 	}
 
@@ -79,6 +80,7 @@ int MNS::Socket::createListening(int port) {
 	    (setsockopt(sfd, IPPROTO_TCP, TCP_NODELAY, &y_int, sizeof(int)) == -1) ||
 	    (setsockopt(sfd, IPPROTO_TCP, TCP_QUICKACK, &y_int, sizeof(int)) == -1)) {
 		// TODO: Return an error
+		close(sfd);
 		return -1;
 	}
 #elif __APPLE__
