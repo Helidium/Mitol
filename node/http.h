@@ -222,6 +222,18 @@ struct HttpResponse {
 		}
 	}
 
+	static void GetStatusCode(Local<String> property, const PropertyCallbackInfo<Value>& info) {
+		MNS::SocketData *data = (MNS::SocketData *) info.Holder()->GetAlignedPointerFromInternalField(0);
+
+		info.GetReturnValue().Set(data->response->statusCode);
+	}
+
+	static void SetStatusCode(Local<String> property, Local<Value> value, const PropertyCallbackInfo<void>& info) {
+		MNS::SocketData *data = (MNS::SocketData *) info.Holder()->GetAlignedPointerFromInternalField(0);
+
+		data->response->statusCode = value->Int32Value();
+	}
+
 	static void WriteHead(const FunctionCallbackInfo<Value> &args) {
 		printf("Writing Head\n");
 	}
@@ -248,6 +260,7 @@ struct HttpResponse {
 		obj_t->Set(isolate, "end", FunctionTemplate::New(isolate, HttpResponse::End));
 		obj_t->Set(isolate, "addTrailers", FunctionTemplate::New(isolate, HttpResponse::AddTrailers));
 		obj_t->SetAccessor(String::NewFromUtf8(isolate, "finished"), HttpResponse::IsFinished);
+		obj_t->SetAccessor(String::NewFromUtf8(isolate, "statusCode"), HttpResponse::GetStatusCode, HttpResponse::SetStatusCode);
 		obj_t->Set(isolate, "setHeader", FunctionTemplate::New(isolate, HttpResponse::SetHeader));
 		obj_t->Set(isolate, "setTimeout", FunctionTemplate::New(isolate, HttpResponse::SetTimeout));
 		obj_t->Set(isolate, "writeHead", FunctionTemplate::New(isolate, HttpResponse::WriteHead));

@@ -30,6 +30,8 @@ MNS::Response::Response(const MNS::SocketData *socketData) {
 }
 
 int MNS::Response::clear() {
+	this->statusCode = 200;
+
 	this->finished = false;
 	this->headersSent = false;
 	this->sendDate = true;
