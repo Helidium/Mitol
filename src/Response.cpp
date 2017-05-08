@@ -124,7 +124,7 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 	// Set the static headers
 
 	// Content-Length
-	std::string strDataLen = std::to_string(dataLen);
+	std::string strDataLen = std::to_string(bufferLen + dataLen);
 	rb = (char *)mempcpy(rb, "Content-Length", 14);
 	rb = (char *)mempcpy(rb, ": ", 2);
 	rb = (char *)mempcpy(rb, strDataLen.c_str(), strDataLen.length());
@@ -162,10 +162,10 @@ int MNS::Response::end(const char *data, unsigned int dataLen) {
 	// Copy the sent data
 	if(data) {
 		rb = (char *)mempcpy(rb, data, dataLen);
-		this->bufferLen += dataLen;
+		offset += dataLen;
 	}
 
-	this->bufferLen += offset;
+	this->bufferLen = offset;
 
 	if(!uv_is_closing((uv_handle_t*)this->socketData->poll_h))
 		uv_poll_start(this->socketData->poll_h, UV_WRITABLE, MNS::Server::onWriteData);
