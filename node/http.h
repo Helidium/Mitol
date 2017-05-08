@@ -152,8 +152,10 @@ struct HttpResponse {
 
 		// TODO: Make sure it is heap allocated; GC not released the value
 		if(data) {
-			String::Utf8Value str(args[0]);
-			data->response->write(*str, str.length());
+			if(!(args[0]->IsNull() || args[0]->IsUndefined())) {
+				String::Utf8Value str(args[0]);
+				data->response->write(*str, str.length());
+			}
 		}
 	}
 
@@ -162,9 +164,6 @@ struct HttpResponse {
 		MNS::SocketData *data = (MNS::SocketData *) args.Holder()->GetAlignedPointerFromInternalField(0);
 
 		if(data) {
-			// TODO: Make sure it is heap allocated; GC not released the value
-			String::Utf8Value str(args[0]);
-
 			// Release the handle
 			static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder)->Reset();
 			delete (static_cast<Persistent<Object> *>(data->nodeRequestPlaceholder));
@@ -174,7 +173,13 @@ struct HttpResponse {
 			delete (static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder));
 			//static_cast<Persistent<Object> *>(data->nodeResponsePlaceholder)->~Persistent<Object>();
 
-			data->response->end(*str, str.length());
+			if(args[0]->IsNull() || args[0]->IsUndefined()) {
+				data->response->end(nullptr, 0);
+			} else {
+				// TODO: Make sure it is heap allocated; GC not released the value
+				String::Utf8Value str(args[0]);
+				data->response->end(*str, str.length());
+			}
 
 			data->nodeRequestPlaceholder = nullptr;
 			data->nodeResponsePlaceholder = nullptr;
