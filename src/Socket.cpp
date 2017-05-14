@@ -52,9 +52,12 @@ int MNS::Socket::createListening(int port) {
 			continue;
 
 		int y_int = 1;
-		//setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &y_int, sizeof(int));
+		if(setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &y_int, sizeof(int)) == -1) {
+			printf("Unable to reuse addr\n"); fflush(stdout);
+		}
+
 		if(setsockopt(sfd, SOL_SOCKET, SO_REUSEPORT, &y_int, sizeof(int)) == -1) {
-			printf("Unable to reuse port!n\n");
+			printf("Unable to reuse port!n\n"); fflush(stdout);
 		}
 
 		s = bind(sfd, rp->ai_addr, rp->ai_addrlen);
