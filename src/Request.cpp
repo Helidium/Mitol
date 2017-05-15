@@ -30,6 +30,22 @@ MNS::Request::Request(const MNS::SocketData *socketData) {
 	this->url = NULL;
 }
 
+int MNS::Request::clear() {
+	this->finished = false;
+	this->lastParsePos = 0;
+	this->state = REQUEST_STATE::CONNECTING;
+	this->bufferLen = 0;
+	this->bufferLen = 0;
+	if(this->bufferSize != 4096) {
+		this->buffer = (char *)realloc(this->buffer, 4096); // TODO: Sanity check, realloc might run out of memory
+		this->bufferSize = 4096;
+	}
+
+	this->httpVersion = MNS::HTTP_VERSION::UNKNOWN_VERSION;
+	this->method = MNS::HTTP_METHOD::UNKNOWN_METHOD;
+	this->url = NULL;
+}
+
 bool MNS::Request::isFinished() {
 	return this->finished;
 }
@@ -58,6 +74,7 @@ int MNS::Request::Parse(ssize_t requestLen) {
 		this->bufferLen = requestLen;
 	}
 
+	char *tailPos = NULL;
 	this->state = REQUEST_STATE::PARSING_HEADERS;
 	
 	PARSER_STATE parserState = PARSER_STATE::METHOD;
@@ -104,7 +121,13 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				break;
 			case PARSER_STATE::URL:
 				this->url = this->buffer + i;
-				i = (int)((char*)memchr(this->url, ' ', requestLen - i) - this->buffer);
+				tailPos = (char*)memchr(this->url, ' ', this->bufferLen - i);
+				if(tailPos == NULL) { // ERROR, TRY AND GET MROE DATA
+					this->state = REQUEST_STATE::NEED_MORE_DATA;
+
+					return 1;
+				}
+				i = (int)(tailPos - this->buffer);
 				buffer[i] = '\0';
 
 				i += 7;
@@ -128,8 +151,15 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				i += (buffer[i + 1] == ' '?2:1);
 
 				char *value = buffer + i;
-				i = (int)((char *)memchr(buffer+i, '\r', requestLen - i) - buffer);
-				buffer[i++] = '\0';
+				tailPos = (char *)memchr(buffer+i, '\r', this->bufferLen - i);
+				if(tailPos == NULL) { // ERROR, TRY AND GET MORE DATA
+					this->state = REQUEST_STATE::NEED_MORE_DATA;
+
+					return 1;
+				} else {
+					i = (int) (tailPos - buffer);
+					buffer[i++] = '\0';
+				}
 
 				//this->headers[std::string(name, nameLen)] = std::string(value, valueLen);
 				this->headers[name] = value;
@@ -169,7 +199,7 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				parserState = PARSER_STATE::FINISHED;
 				break;
 			default:
-				i = requestLen;
+				i = this->bufferLen;
 				this->finished = true;
 				break;
 		}

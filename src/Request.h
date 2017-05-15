@@ -35,7 +35,8 @@ namespace MNS {
             READING_SOCKET,
             PARSING_HEADERS,
             PARSING_BODY,
-            FINISHED
+            FINISHED,
+	        NEED_MORE_DATA
         };
 
 	    /**
@@ -46,6 +47,12 @@ namespace MNS {
 
 	    /// Default destructor
         ~Request();
+
+	    /**
+		 * Clears the request to be reused in case of persistent connections
+		 * @return 0 on success, non zero on error
+		 */
+	    int clear();
 
 	    /**
 	     * Returns the finish state of the request

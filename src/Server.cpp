@@ -71,20 +71,28 @@ void MNS::Server::onReadDataPipelined(uv_poll_t *handle, int status, int events)
 	MNS::SocketData *data = static_cast<MNS::SocketData *>(handle->data);
 	MNS::Server *server = data->server;
 
-	if (!data->request->Parse(-1)) {
+	int parseResult = data->request->Parse(-1);
+	if (!parseResult) { // PARSING OK
 		data->response->startResponse();
 
 		if (server->onHttpRequestHandler) {
 			server->onHttpRequestHandler(data);
 		} else {
+			fflush(stdout);
+
 			uv_poll_stop(handle);
 			uv_close((uv_handle_t *) handle, MNS::Server::onClose);
 		}
-	} else {
-		printf("Parse ERROR! Closing socket!\n");
+	} else { // ERROR PARSING
+		if(data->request->state == MNS::Request::REQUEST_STATE::NEED_MORE_DATA) { // MORE DATA REQUIRED
+			if(!uv_is_closing((uv_handle_t*)handle))
+				uv_poll_start(handle, UV_READABLE, onReadData);
+		} else {
+			//printf("Parse ERROR! Closing socket!\n");
 
-		uv_poll_stop(handle);
-		uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+			uv_poll_stop(handle);
+			uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+		}
 	}
 }
 
@@ -96,11 +104,11 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 		return;
 	}
 
-	ssize_t requestLen = 0;
-	ssize_t bytesRead = 0;
 	MNS::SocketData *data = static_cast<MNS::SocketData *>(handle->data);
 	MNS::Server *server = data->server;
 
+	ssize_t requestLen = data->request->getBufferLen();
+	ssize_t bytesRead = 0;
 	// Todo: Offset and grow buffer in case of larger requests
 	// Todo: Mark request state as reading socket
 	while ((bytesRead = recv(data->fd, data->request->getBuffer() + requestLen, 1024, 0)) > 0) { // WHILE DATA READ:: POTENTIAL ERROR SIZE OF READ DATA
@@ -121,7 +129,8 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 			return;
 		}
 	} else {
-		if (!data->request->Parse(requestLen)) {
+		int parseResult = data->request->Parse(requestLen);
+		if (!parseResult) { // PARSING OK
 			data->response->startResponse();
 
 			if (server->onHttpRequestHandler) {
@@ -132,11 +141,16 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 				uv_poll_stop(handle);
 				uv_close((uv_handle_t *) handle, MNS::Server::onClose);
 			}
-		} else {
-			//printf("Parse ERROR! Closing socket!\n");
+		} else { // ERROR PARSING
+			if(data->request->state == MNS::Request::REQUEST_STATE::NEED_MORE_DATA) { // MORE DATA REQUIRED
+				if(!uv_is_closing((uv_handle_t*)handle))
+					uv_poll_start(handle, UV_READABLE, onReadData);
+			} else {
+				//printf("Parse ERROR! Closing socket!\n");
 
-			uv_poll_stop(handle);
-			uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+				uv_poll_stop(handle);
+				uv_close((uv_handle_t *) handle, MNS::Server::onClose);
+			}
 		}
 	}
 }
@@ -160,6 +174,7 @@ void MNS::Server::onWriteData(uv_poll_t *handle, int status, int events) {
 			response->clear();
 
 			if (data->request->isFinished()) {
+				data->request->clear();
 				if(!uv_is_closing((uv_handle_t*)handle))
 					uv_poll_start(handle, UV_READABLE, onReadData);
 			} else {
