@@ -35,7 +35,6 @@ int MNS::Request::clear() {
 	this->lastParsePos = 0;
 	this->state = REQUEST_STATE::CONNECTING;
 	this->bufferLen = 0;
-	this->bufferLen = 0;
 	if(this->bufferSize != 4096) {
 		this->buffer = (char *)realloc(this->buffer, 4096); // TODO: Sanity check, realloc might run out of memory
 		this->bufferSize = 4096;

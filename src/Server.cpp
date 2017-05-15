@@ -107,7 +107,7 @@ void MNS::Server::onReadData(uv_poll_t *handle, int status, int events) {
 	MNS::SocketData *data = static_cast<MNS::SocketData *>(handle->data);
 	MNS::Server *server = data->server;
 
-	ssize_t requestLen = data->request->getBufferLen();
+	ssize_t requestLen = data->request->isFinished()data->request->getBufferLen();
 	ssize_t bytesRead = 0;
 	// Todo: Offset and grow buffer in case of larger requests
 	// Todo: Mark request state as reading socket
