@@ -44,6 +44,8 @@ int MNS::Request::clear() {
 	this->httpVersion = MNS::HTTP_VERSION::UNKNOWN_VERSION;
 	this->method = MNS::HTTP_METHOD::UNKNOWN_METHOD;
 	this->url = NULL;
+
+	return 0;
 }
 
 bool MNS::Request::isFinished() {
