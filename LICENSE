@@ -2,6 +2,9 @@ ZLIB License
 
 Copyright (c) 2017 Marko Biškup
 
+Based on software developed as µWebSockets,
+Copyright (c) 2016 Alex Hultman and contributors
+
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
 arising from the use of this software.
