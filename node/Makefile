@@ -7,6 +7,7 @@ default:
 	NODE=targets/node-v5.12.0 ABI=47 make `(uname -s)`
 	NODE=targets/node-v6.10.2 ABI=48 make `(uname -s)`
 	NODE=targets/node-v7.8.0 ABI=51 make `(uname -s)`
+	NODE=targets/node-v8.0.0 ABI=57 make `(uname -s)`
 	cp ../README.md dist/README.md
 	cp ../LICENSE dist/LICENSE
 	cp package.json dist/package.json
@@ -19,6 +20,7 @@ targets:
 	curl https://nodejs.org/dist/v5.12.0/node-v5.12.0-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v6.10.2/node-v6.10.2-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v7.8.0/node-v7.8.0-headers.tar.gz | tar xz -C targets
+	curl https://nodejs.org/dist/v8.0.0/node-v8.0.0-headers.tar.gz | tar xz -C targets
 Linux:
 	$(CXX) $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -s -o dist/mns_linux_$$ABI.node
 Darwin:
