@@ -30,23 +30,17 @@ Current implementation lacks focus on **performance**, which can be achieved by 
 ***
 
 ## How to use
-Currently only Linux has been tested. To install the project make sure you have build-tools installed.
-To build the node packages do the following:
+Currently only Linux has been tested. To install the project make sure you have node-gyp, python and build-tools (GCC, etc.) installed.
+To build the node package do the following:
 ```bash
-cd node
-make
-```
-The packages will be built in the dist folder, containing compiled packages as well as index.js module file.
-In your project copy the dist folder to:
-```bash
-node_modules/mns
+npm i mitol
 ```
 
 To test the project you can use the following script 
 
 (Single process):
 ```javascript
-const http = require('mns');
+const http = require('mitol');
  
 let server = http.createServer((req, res) => {
     res.end('Hello World!');
@@ -61,7 +55,7 @@ server.listen(8080, function () {
 ```javascript
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
-const http = require('mns');
+const http = require('mitol');
  
 if (cluster.isMaster) {
     // Fork workers.
