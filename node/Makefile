@@ -14,7 +14,7 @@ default:
 	cp index.js dist/index.js
 	for f in dist/*.node; do chmod +x $$f; done
 targets:
-	mkdir dist
+	mkdir bin
 	mkdir targets
 	curl https://nodejs.org/dist/v4.8.2/node-v4.8.2-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v5.12.0/node-v5.12.0-headers.tar.gz | tar xz -C targets
