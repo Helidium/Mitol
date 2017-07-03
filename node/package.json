@@ -1,11 +1,12 @@
 {
-  "name": "mns",
-  "version": "0.0.1",
+  "name": "mitol",
+  "version": "0.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
   },
-  "author": "",
+  "author": "Marko Biškup (Helidium)",
   "license": "MIT"
 }

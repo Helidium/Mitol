@@ -19,9 +19,9 @@ struct HttpRequest {
 	static void On(const FunctionCallbackInfo<Value> &args) {
 		if (args.Length() == 2 && args[0]->IsString()) {
 			String::Utf8Value EventName(args[0]);
-			if (*EventName == "data") {
+			if (strncmp(*EventName, "data", 4) == 0) {
 				args.Holder()->SetInternalField(1, args[1]);
-			} else if (*EventName == "end") {
+			} else if (strncmp(*EventName, "end", 3) == 0) {
 				args.Holder()->SetInternalField(2, args[1]);
 			}
 		}
@@ -75,6 +75,9 @@ struct HttpRequest {
 				case MNS::HTTP_METHOD::TRACE:
 					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "TRACE", String::kNormalString, 5));
 					break;
+				case MNS::HTTP_METHOD::UNKNOWN_METHOD:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "UNKNOWN", String::kNormalString, 8));
+					break;
 			}
 		}
 	}
@@ -89,6 +92,9 @@ struct HttpRequest {
 					break;
 				case MNS::HTTP_VERSION::HTTP_1_1:
 					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "1.1", String::kNormalString, 3));
+					break;
+				case MNS::HTTP_VERSION::UNKNOWN_VERSION:
+					args.GetReturnValue().Set(String::NewFromOneByte(args.GetIsolate(), (uint8_t *) "UNKNOWN", String::kNormalString, 8));
 					break;
 			}
 		}
@@ -244,9 +250,9 @@ struct HttpResponse {
 	static void On(const FunctionCallbackInfo<Value> &args) {
 		if (args.Length() == 2 && args[0]->IsString()) {
 			String::Utf8Value EventName(args[0]);
-			if (*EventName == "finish") {
+			if (strncmp(*EventName, "finish", 6) == 0) {
 				args.Holder()->SetInternalField(1, args[1]);
-			} else if (*EventName == "end") {
+			} else if (strncmp(*EventName, "end", 3) == 0) {
 				args.Holder()->SetInternalField(2, args[1]);
 			}
 		}

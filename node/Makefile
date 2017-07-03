@@ -22,9 +22,9 @@ targets:
 	curl https://nodejs.org/dist/v7.8.0/node-v7.8.0-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v8.0.0/node-v8.0.0-headers.tar.gz | tar xz -C targets
 Linux:
-	$(CXX) $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -s -o dist/mns_linux_$$ABI.node
+	$(CXX) $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -s -o bin/mns_linux_$$ABI.node
 Darwin:
-	$(CXX) $(CPP_SHARED) $(CPP_DARWIN) -I $$NODE/include/node -o dist/mns_darwin_$$ABI.node
+	$(CXX) $(CPP_SHARED) $(CPP_DARWIN) -I $$NODE/include/node -o bin/mns_darwin_$$ABI.node
 .PHONY: clean
 clean:
 	rm -rf dist
