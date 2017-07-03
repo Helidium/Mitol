@@ -14,7 +14,8 @@ default:
 	cp index.js dist/index.js
 	for f in dist/*.node; do chmod +x $$f; done
 targets:
-	mkdir bin
+	mkdir dist
+	mkdir dist/bin
 	mkdir targets
 	curl https://nodejs.org/dist/v4.8.2/node-v4.8.2-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v5.12.0/node-v5.12.0-headers.tar.gz | tar xz -C targets
@@ -22,9 +23,9 @@ targets:
 	curl https://nodejs.org/dist/v7.8.0/node-v7.8.0-headers.tar.gz | tar xz -C targets
 	curl https://nodejs.org/dist/v8.0.0/node-v8.0.0-headers.tar.gz | tar xz -C targets
 Linux:
-	$(CXX) $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -s -o bin/mns_linux_$$ABI.node
+	$(CXX) $(CPP_SHARED) -static-libstdc++ -static-libgcc -I $$NODE/include/node -s -o dist/bin/mns_linux_$$ABI.node
 Darwin:
-	$(CXX) $(CPP_SHARED) $(CPP_DARWIN) -I $$NODE/include/node -o bin/mns_darwin_$$ABI.node
+	$(CXX) $(CPP_SHARED) $(CPP_DARWIN) -I $$NODE/include/node -o dist/bin/mns_darwin_$$ABI.node
 .PHONY: clean
 clean:
 	rm -rf dist
