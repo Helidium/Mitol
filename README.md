@@ -78,6 +78,10 @@ if (cluster.isMaster) {
 ```
 
 ***
+## Like the project?
+
+You can support me by donating: https://www.paypal.com/paypalme/helidium
+***
 
 ## Thanks
 My Family and Friends for supporting me!<br/>
