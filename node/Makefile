@@ -12,7 +12,7 @@ default:
 	cp ../LICENSE dist/LICENSE
 	cp package.json dist/package.json
 	cp index.js dist/index.js
-	for f in dist/*.node; do chmod +x $$f; done
+	for f in dist/bin/*.node; do chmod +x $$f; done
 targets:
 	mkdir dist
 	mkdir dist/bin
