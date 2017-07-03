@@ -1,12 +1,21 @@
 {
   "name": "mitol",
-  "version": "0.0.3",
-  "description": "",
+  "version": "0.0.5",
+  "description": "Lightweight, high performance NodeJS Server",
   "main": "index.js",
+  "homepage": "https://helidium.github.io/Mitol/",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Helidium/Mitol.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "node-gyp rebuild"
   },
-  "author": "Marko Biškup (Helidium)",
+  "author": {
+    "name" : "Marko Biškup",
+    "email" : "marko.biskup@helidium.net",
+    "url" : "http://www.helidium.net/"
+  },
   "license": "MIT"
 }
