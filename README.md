@@ -46,7 +46,7 @@ let server = http.createServer((req, res) => {
     res.end('Hello World!');
 });
  
-server.listen(8080, function () {
+server.listen(8080, () => {
     console.log('Example app listening on port 8080!')
 });
 ```
@@ -71,7 +71,7 @@ if (cluster.isMaster) {
         res.end('Hello World!');
     });
  
-    server.listen(8080, function () {
+    server.listen(8080, () => {
         console.log('Example app listening on port 8080!')
     });
 }
