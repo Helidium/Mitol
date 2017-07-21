@@ -7,7 +7,7 @@
 
 #include <node.h>
 #include <v8.h>
-#include "../src/Server.h"
+#include "src/Server.h"
 
 using namespace v8;
 
@@ -25,6 +25,9 @@ struct HttpRequest {
 				args.Holder()->SetInternalField(2, args[1]);
 			}
 		}
+	}
+
+	static void RemoveListener(const FunctionCallbackInfo<Value> &args) {
 	}
 
 	static void Unpipe(const FunctionCallbackInfo<Value> &args) {
@@ -135,6 +138,7 @@ struct HttpRequest {
 		obj_t->Set(isolate, "unpipe", FunctionTemplate::New(isolate, HttpRequest::Unpipe));
 		obj_t->Set(isolate, "resume", FunctionTemplate::New(isolate, HttpRequest::Resume));
 		obj_t->Set(isolate, "on", FunctionTemplate::New(isolate, HttpRequest::On));
+		obj_t->Set(isolate, "removelistener", FunctionTemplate::New(isolate, HttpRequest::RemoveListener));
 		obj_t->SetAccessor(String::NewFromUtf8(isolate, "httpVersion"), HttpRequest::GetHttpVersion);
 		obj_t->SetAccessor(String::NewFromUtf8(isolate, "method"), HttpRequest::GetMethod);
 		obj_t->SetAccessor(String::NewFromUtf8(isolate, "url"), HttpRequest::GetUrl);
@@ -247,6 +251,8 @@ struct HttpResponse {
 	static void SetTimeout(const FunctionCallbackInfo<Value> &args) {
 	}
 
+	static void RemoveListener(const FunctionCallbackInfo<Value> &args) {}
+
 	static void On(const FunctionCallbackInfo<Value> &args) {
 		if (args.Length() == 2 && args[0]->IsString()) {
 			String::Utf8Value EventName(args[0]);
@@ -271,6 +277,7 @@ struct HttpResponse {
 		obj_t->Set(isolate, "setTimeout", FunctionTemplate::New(isolate, HttpResponse::SetTimeout));
 		obj_t->Set(isolate, "writeHead", FunctionTemplate::New(isolate, HttpResponse::WriteHead));
 		obj_t->Set(isolate, "on", FunctionTemplate::New(isolate, HttpResponse::On));
+		obj_t->Set(isolate, "removeListener", FunctionTemplate::New(isolate, HttpResponse::RemoveListener));
 
 		return obj_t->NewInstance();
 	}

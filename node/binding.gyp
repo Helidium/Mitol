@@ -19,7 +19,7 @@
           "cflags_cc": [
             "-std=c++11",
             "-O3",
-            "-I ../src",
+            "-I src",
             "-fPIC",
             "-Wno-format-contains-nul",
             "-Wno-deprecated-declarations"
