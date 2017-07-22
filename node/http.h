@@ -1,6 +1,9 @@
 //
 // Created by helidium on 3/28/17.
 //
+// Parts of the code are based on software developed as µWebSockets,
+// Copyright (c) 2016 Alex Hultman and contributors.
+//
 
 #ifndef MNS_HTTP_H
 #define MNS_HTTP_H
