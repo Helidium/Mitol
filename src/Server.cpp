@@ -197,10 +197,54 @@ void MNS::Server::onWriteData(uv_poll_t *handle, int status, int events) {
 }
 
 MNS::Server::Server() {
+	MNS::Server::response_msgs[100] = "100 Continue\r\n";
+	MNS::Server::response_msgs[101] = "101 Switching Protocols\r\n";
+	MNS::Server::response_msgs[102] = "102 Checkpoint\r\n";
+
 	MNS::Server::response_msgs[200] = "200 OK\r\n";
-	MNS::Server::response_msgs[301] = "301 Redirect\r\n";
+	MNS::Server::response_msgs[201] = "201 Created\r\n";
+	MNS::Server::response_msgs[202] = "202 Accepted\r\n";
+	MNS::Server::response_msgs[203] = "203 Non-Authoritative Information\r\n";
+	MNS::Server::response_msgs[204] = "204 No Content\r\n";
+	MNS::Server::response_msgs[205] = "205 Reset Content\r\n";
+	MNS::Server::response_msgs[206] = "206 Partial Content\r\n";
+
+	MNS::Server::response_msgs[300] = "300 Multiple Choices\r\n";
+	MNS::Server::response_msgs[301] = "301 Moved Permanently\r\n";
+	MNS::Server::response_msgs[302] = "302 Found\r\n";
+	MNS::Server::response_msgs[303] = "303 See Other\r\n";
+	MNS::Server::response_msgs[304] = "304 Not Modified\r\n";
+	MNS::Server::response_msgs[306] = "306 Switch Proxy\r\n";
+	MNS::Server::response_msgs[307] = "307 Temporary Redirect\r\n";
+	MNS::Server::response_msgs[308] = "308 Resume Incomplete\r\n";
+
+
+	MNS::Server::response_msgs[400] = "400 Bad Request\r\n";
+	MNS::Server::response_msgs[401] = "401 Unauthorized\r\n";
+	MNS::Server::response_msgs[402] = "402 Payment Required\r\n";
+	MNS::Server::response_msgs[403] = "403 Forbidden\r\n";
 	MNS::Server::response_msgs[404] = "404 Not Found\r\n";
+	MNS::Server::response_msgs[405] = "405 Method Not Allowed\r\n";
+	MNS::Server::response_msgs[406] = "406 Not Acceptable\r\n";
+	MNS::Server::response_msgs[407] = "407 Proxy Authentication Required\r\n";
+	MNS::Server::response_msgs[408] = "408 Request Timeout\r\n";
+	MNS::Server::response_msgs[409] = "409 Conflict\r\n";
+	MNS::Server::response_msgs[410] = "410 Gone\r\n";
+	MNS::Server::response_msgs[411] = "411 Length Required\r\n";
+	MNS::Server::response_msgs[412] = "412 Precondition Failed\r\n";
+	MNS::Server::response_msgs[413] = "413 Request Entity Too Large\r\n";
+	MNS::Server::response_msgs[414] = "414 Request-URI Too Long\r\n";
+	MNS::Server::response_msgs[415] = "415 Unsupported Media Type\r\n";
+	MNS::Server::response_msgs[416] = "416 Requested Range Not Satisfiable\r\n";
+	MNS::Server::response_msgs[417] = "417 Expectation Failed\r\n";
+
 	MNS::Server::response_msgs[500] = "500 Internal Server Error\r\n";
+	MNS::Server::response_msgs[501] = "501 Not Implemented\r\n";
+	MNS::Server::response_msgs[502] = "502 Bad Gateway\r\n";
+	MNS::Server::response_msgs[503] = "503 Service Unavailable\r\n";
+	MNS::Server::response_msgs[504] = "504 Gateway Timeout\r\n";
+	MNS::Server::response_msgs[505] = "505 HTTP Version Not Supported\r\n";
+	MNS::Server::response_msgs[511] = "511 Network Authentication Required\r\n";
 
 	loop = uv_default_loop();
 
