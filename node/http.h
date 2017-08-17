@@ -332,13 +332,13 @@ struct Http {
 
 				Local<Function>::New(isolate, httpRequestCallback)->Call(isolate->GetCurrentContext()->Global(), 2, argv);
 
-				Local<Value> dataCallback = reqProto->GetInternalField(1);
+				Local<Value> dataCallback = req->GetInternalField(1);
 				if (!dataCallback->IsUndefined()) {
 					Local<Value> argv[] = {ArrayBuffer::New(isolate, data->request->getBuffer(), data->request->getBufferLen())};
 					Local<Function>::Cast(dataCallback)->Call(isolate->GetCurrentContext()->Global(), 1, argv);
 				}
 
-				Local<Value> endCallback = reqProto->GetInternalField(2);
+				Local<Value> endCallback = req->GetInternalField(2);
 				if (!endCallback->IsUndefined()) {
 					Local<Function>::Cast(endCallback)->Call(isolate->GetCurrentContext()->Global(), 0, nullptr);
 				}
