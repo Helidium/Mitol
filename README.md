@@ -18,7 +18,7 @@ Current implementation lacks focus on **performance**, which can be achieved by 
 ***
 
 ### Advantages
-+ **No changes required**: Just replace require('http') with require('mns')
++ **No changes required**: Just replace require('http') with require('mitol')
 + **Top Speed**: Roughly 3x better performance than integrated server
 + **Additional features**: Work in progress (Static file server, Router, ...)
 
