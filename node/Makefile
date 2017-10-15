@@ -3,7 +3,6 @@ CPP_DARWIN := -stdlib=libc++ -mmacosx-version-min=10.7 -undefined dynamic_lookup
 
 default:
 	make targets
-	NODE=targets/node-v4.8.2 ABI=46 make `(uname -s)`
 	NODE=targets/node-v5.12.0 ABI=47 make `(uname -s)`
 	NODE=targets/node-v6.10.2 ABI=48 make `(uname -s)`
 	NODE=targets/node-v7.8.0 ABI=51 make `(uname -s)`

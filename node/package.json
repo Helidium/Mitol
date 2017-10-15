@@ -1,6 +1,6 @@
 {
   "name": "mitol",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "description": "Lightweight, high performance NodeJS Server",
   "main": "index.js",
   "homepage": "https://helidium.github.io/Mitol/",
@@ -17,5 +17,5 @@
     "email" : "marko.biskup@helidium.net",
     "url" : "http://www.helidium.net/"
   },
-  "license": "MIT"
+  "license": "ZLIB"
 }
