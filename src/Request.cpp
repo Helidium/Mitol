@@ -20,8 +20,10 @@ MNS::Request::Request(const MNS::SocketData *socketData) {
 	this->finished = false;
 	this->lastParsePos = 0;
 	this->buffer = (char *) malloc(4096);
+	this->bodyBuffer = NULL;
 	this->bufferSize = 4096;
 	this->bufferLen = 0;
+	this->bodyBufferLen = 0;
 	this->state = REQUEST_STATE::CONNECTING;
 
 	this->httpVersion = MNS::HTTP_VERSION::UNKNOWN_VERSION;
@@ -39,6 +41,8 @@ int MNS::Request::clear() {
 		this->buffer = (char *)realloc(this->buffer, 4096); // TODO: Sanity check, realloc might run out of memory
 		this->bufferSize = 4096;
 	}
+	this->bodyBuffer = NULL;
+	this->bodyBufferLen = 0;
 
 	this->httpVersion = MNS::HTTP_VERSION::UNKNOWN_VERSION;
 	this->method = MNS::HTTP_METHOD::UNKNOWN_METHOD;
@@ -55,6 +59,10 @@ char *MNS::Request::getBuffer() {
 	return this->buffer;
 }
 
+char *MNS::Request::getBodyBuffer() {
+	return this->bodyBuffer;
+}
+
 ssize_t MNS::Request::getBufferSize() {
 	return this->bufferSize;
 }
@@ -66,6 +74,10 @@ void MNS::Request::resizeBuffer(int ns) {
 
 ssize_t MNS::Request::getBufferLen() {
 	return this->bufferLen;
+}
+
+ssize_t MNS::Request::getBodyBufferLen() {
+	return this->bodyBufferLen;
 }
 
 int MNS::Request::Parse(ssize_t requestLen) {
@@ -197,6 +209,10 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				break;
 			}
 			case PARSER_STATE::BODY:
+				i += 3;
+				// TODO: Copy the body into the message buffer to send to onData event
+				this->bodyBuffer = buffer + i - 1;
+				this->bodyBufferLen = this->bufferLen - i;
 				parserState = PARSER_STATE::FINISHED;
 				break;
 			default:

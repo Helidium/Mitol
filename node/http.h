@@ -8,6 +8,11 @@
 #ifndef MNS_HTTP_H
 #define MNS_HTTP_H
 
+#define SERVER_CLOSE_EVENT 1
+#define SERVER_CONNECTION_EVENT 2
+#define SERVER_ERROR_EVENT 3
+#define SERVER_LISTENING_EVENT 4
+
 #include <node.h>
 #include <v8.h>
 #include "src/Server.h"
@@ -289,8 +294,9 @@ struct HttpResponse {
 struct Http {
 	static Local<Object> getObjectTemplate(Isolate *isolate) {
 		Local<ObjectTemplate> obj_t = ObjectTemplate::New(isolate);
-		obj_t->SetInternalFieldCount(1);
+		obj_t->SetInternalFieldCount(6);
 
+		obj_t->Set(isolate, "on", FunctionTemplate::New(isolate, Http::On));
 		obj_t->Set(isolate, "close", FunctionTemplate::New(isolate, Http::stopServer));
 		obj_t->Set(isolate, "listen", FunctionTemplate::New(isolate, Http::listen));
 		obj_t->Set(isolate, "get", FunctionTemplate::New(isolate, Http::get));
@@ -308,6 +314,17 @@ struct Http {
 		obj->SetAlignedPointerInInternalField(0, server);
 
 		httpPersistent.Reset(isolate, obj);
+
+		server->onHttpConnection([isolate](MNS::SocketData *data) {
+			HandleScope hs(isolate);
+
+			Local<Value> connectionCallback = httpPersistent.Get(isolate)->GetInternalField(SERVER_CONNECTION_EVENT);
+
+			if(!connectionCallback->IsUndefined()) {
+				// TODO: Return the socket object
+				Local<Function>::Cast(connectionCallback)->Call(isolate->GetCurrentContext()->Global(), 0, nullptr);
+			}
+		});
 
 		if (args.Length() == 1 && args[0]->IsFunction()) {
 			httpRequestCallback.Reset(isolate, Local<Function>::Cast(args[0]));
@@ -334,7 +351,7 @@ struct Http {
 
 				Local<Value> dataCallback = req->GetInternalField(1);
 				if (!dataCallback->IsUndefined()) {
-					Local<Value> argv[] = {ArrayBuffer::New(isolate, data->request->getBuffer(), data->request->getBufferLen())};
+					Local<Value> argv[] = {String::NewFromUtf8(isolate, data->request->getBodyBuffer(), v8::String::kNormalString, data->request->getBodyBufferLen())};
 					Local<Function>::Cast(dataCallback)->Call(isolate->GetCurrentContext()->Global(), 1, argv);
 				}
 
@@ -381,6 +398,21 @@ struct Http {
 
 		if(server) {
 			server->stop();
+		}
+	}
+
+	static void On(const FunctionCallbackInfo<Value> &args) {
+		if (args.Length() == 2 && args[0]->IsString()) {
+			String::Utf8Value EventName(args[0]);
+			if (strncmp(*EventName, "close", 5) == 0) {
+				args.Holder()->SetInternalField(SERVER_CLOSE_EVENT, args[1]);
+			} else if (strncmp(*EventName, "connection", 10) == 0) {
+				args.Holder()->SetInternalField(SERVER_CONNECTION_EVENT, args[1]);
+			} else if (strncmp(*EventName, "error", 5) == 0) {
+				args.Holder()->SetInternalField(SERVER_ERROR_EVENT, args[1]);
+			} else if (strncmp(*EventName, "listening", 10) == 0) {
+				args.Holder()->SetInternalField(SERVER_LISTENING_EVENT, args[1]);
+			}
 		}
 	}
 

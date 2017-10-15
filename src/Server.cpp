@@ -272,6 +272,10 @@ void MNS::Server::listen(int port) {
 
 		uv_poll_start(listening_poll_h, UV_READABLE, onConnect);
 		polls[listeningSocket] = listening_poll_h;
+
+		if(this->onHttpListeningHandler) {
+			this->onHttpListeningHandler();
+		}
 	}
 }
 
@@ -298,6 +302,10 @@ void MNS::Server::onSecondTimer(uv_timer_t *handle) {
 	std::strftime(strt, 100, "%a, %e %b %Y %H:%M:%S GMT\0", std::gmtime(&t));
 
 	MNS::Server::currTime = strt;
+}
+
+void MNS::Server::onHttpListening(const std::function<void()> &callback) {
+	this->onHttpListeningHandler = callback;
 }
 
 void MNS::Server::onHttpConnection(const std::function<void(MNS::SocketData *)> &callback) {

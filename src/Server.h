@@ -103,6 +103,12 @@ namespace MNS {
         void listen(int port);
 
 	    /// Callback holder
+	    std::function<void()> onHttpListeningHandler;
+
+	    ///Registers a callback function, when a server starts listening
+	    void onHttpListening(const std::function<void()> &);
+
+	    /// Callback holder
 	    std::function<void(MNS::SocketData *)> onHttpConnectionHandler;
 
 	    ///Registers a callback function, when a connection is received

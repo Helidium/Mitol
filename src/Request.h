@@ -64,7 +64,23 @@ namespace MNS {
 	     * @return Buffer containing the request data
 	     */
         char* getBuffer();
+
+	    /**
+	     * Returns the body of the request
+	     * @return Buffer containing the body of the request
+	     */
+	    char* getBodyBuffer();
+
+	    /**
+	     * Returns the size of the request buffer
+	     * @return Size of the buffer
+	     */
 	    ssize_t getBufferSize();
+
+	    /**
+	     * Resizes the request buffer in case the buffer is smaller than the data
+	     * @param newSize New size of the buffer
+	     */
 	    void resizeBuffer(int newSize);
 
 	    /**
@@ -72,6 +88,12 @@ namespace MNS {
 	     * @return Length of the read request
 	     */
 	    ssize_t getBufferLen();
+
+	    /**
+	     * Returns the lenght of the request body data
+	     * @return Length of the read request body
+	     */
+	    ssize_t getBodyBufferLen();
 
 	    /**
 	     * Parse the request
@@ -113,8 +135,9 @@ namespace MNS {
         REQUEST_STATE state;
 
     private:
-	    /// Internal buffer
+	    /// Internal buffers
         char* buffer;
+	    char* bodyBuffer;
 
 	    /// Mark the finish of the request processing
 	    bool finished;
@@ -122,6 +145,9 @@ namespace MNS {
 	    ssize_t lastParsePos;
 	    /// Internal buffer length
 	    ssize_t bufferLen;
+
+	    /// Internal body buffer length
+	    ssize_t bodyBufferLen;
 
 	    ssize_t bufferSize;
 
