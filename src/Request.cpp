@@ -209,9 +209,9 @@ int MNS::Request::Parse(ssize_t requestLen) {
 				break;
 			}
 			case PARSER_STATE::BODY:
-				i += 3;
+				i += 2;
 				// TODO: Copy the body into the message buffer to send to onData event
-				this->bodyBuffer = buffer + i - 1;
+				this->bodyBuffer = buffer + i;
 				this->bodyBufferLen = this->bufferLen - i;
 				parserState = PARSER_STATE::FINISHED;
 				break;

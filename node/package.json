@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "node-gyp rebuild"
+    "install": "node-gyp rebuild > build_log.txt 2>&1 || exit 0"
   },
   "author": {
     "name" : "Marko Biškup",
