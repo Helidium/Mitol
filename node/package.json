@@ -1,6 +1,6 @@
 {
   "name": "mitol",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Lightweight, high performance NodeJS Server",
   "main": "index.js",
   "homepage": "https://helidium.github.io/Mitol/",
