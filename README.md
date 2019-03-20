@@ -1,3 +1,5 @@
+**unmaintained** It was great developing the high performance HTTP server alternative for NodeJS, but I don't have the time to continue development of the project. If anyone wants to continue development, feel free to contact me...
+
 <a href="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png">
 <img src="https://github.com/Helidium/Mitol/raw/master/docs/images/mitol.png" alt="Mitol" width="190">
 </a>
